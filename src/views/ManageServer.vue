@@ -15,9 +15,9 @@ export default {
     name: 'ManageServer',
     data() {
         return {
-            btnStartT: "Start",
+            btnStartT: "Start Server",
             btnStartV: "primary",
-            btnStopT: "Stop",
+            btnStopT: "Stop Server",
             btnStopV: "primary",
             error_msg: "",
             logs: [],
@@ -43,7 +43,7 @@ export default {
                             if (server_status.start_state === "running") {
                                 this.btnStartT = "Starting server";
                                 this.btnStartV = "warning";
-                                this.btnStopT = "Stop";
+                                this.btnStopT = "Stop Server";
                                 this.btnStopV = "secondary";
                                 this.streaming = "start"
                                 this.streamLogs("start")
@@ -57,7 +57,7 @@ export default {
                             if (server_status.stop_state === "running") {
                                 this.btnStopT = "Shutting down server";
                                 this.btnStopV = "warning";
-                                this.btnStartT = "Start";
+                                this.btnStartT = "Start Server";
                                 this.btnStartV = "secondary";
                                 this.streaming = "stop"
                                 this.streamLogs("stop")
@@ -68,8 +68,7 @@ export default {
                                 this.logs = server_status.stop_logs
                             }
                         }
-                    }
-                    else { this.$emit('updateParent'); }
+                    } else { this.$emit('updateParent'); }
                 })
                 .catch((e) => {
                     console.log(e);
@@ -119,23 +118,21 @@ export default {
                 axios.get(path, {headers: { 'Authorization': `token ${localStorage.getItem('token')}` }})
                     .then((res) => {
                         console.log(res.data);
-                        if (res.data.status === "success"){
+                        if (res.data.status === "success" && res.data.msg !== "refresh"){
                             if (route === "start"){
                                 this.btnStartT = res.data.msg;
                                 this.btnStartV = "warning";
-                                this.btnStopT = "Stop";
+                                this.btnStopT = "Stop Server";
                                 this.btnStopV = "secondary";
                             } else if (route === "stop"){
                                 this.btnStopT = res.data.msg;
                                 this.btnStopV = "warning";
-                                this.btnStartT = "Start";
+                                this.btnStartT = "Start Server";
                                 this.btnStartV = "secondary";
                             }
                             this.streaming = route;
                             this.streamLogs(route);
-                        } else {
-                            this.$emit('updateParent');
-                        }
+                        } else { this.$emit('updateParent'); }
                     })
                     .catch((e) => {
                         this.error_msg = e;
@@ -167,4 +164,9 @@ p#log {
    margin: 0px;
    padding: 0px;
 }
+
+#error {
+    color: red;
+}
+
 </style>

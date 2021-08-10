@@ -20,8 +20,13 @@ export default {
     },
     data() { return { authenticated: false } },
 
+    mounted: function () { if (localStorage.getItem("token")) { this.authenticated = true } },
+
     methods: {
-        updateAuth: function() { this.authenticated = !this.authenticated }
+        updateAuth: function() { 
+            if (this.authenticated) { localStorage.removeItem("token") }
+            this.authenticated = !this.authenticated 
+        }
     }
 }
 </script>
