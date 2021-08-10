@@ -2,10 +2,9 @@
     <div id="manageServer">
         <button v-bind:class="'btn btn-' + btnStartV" v-on:click="manage('start')" id="startBtn"> {{ btnStartT }}</button>
         <button v-bind:class="'btn btn-' + btnStopV" v-on:click="manage('stop')" id="stopBtn"> {{ btnStopT }}</button>
-        <h5>Status: {{ manage_msg }}</h5>
-        <h5>Logs:</h5>
+        <p id="error">{{ error_msg }}</p>
+        <h5 id="recentActivity">Recent activity:</h5>
         <p v-for="log in logs" :key="log.id" id="log">{{ log }}</p>
-        <p> {{ server_status }} </p>
     </div>
 </template>
 
@@ -20,11 +19,10 @@ export default {
             btnStartV: "primary",
             btnStopT: "Stop",
             btnStopV: "primary",
-            manage_msg: "",
+            error_msg: "",
             logs: [],
             logsInterval: undefined,
             streaming: "",
-            server_status: "",
             ec2_state: ""
         }
     },
@@ -39,12 +37,43 @@ export default {
             const path = `${process.env.VUE_APP_API_ENDPOINT}/status`;
             axios.get(path, {headers: { 'Authorization': `token ${localStorage.getItem('token')}` }})
                 .then((res) => {
-                    console.log(res.data);
-                    this.server_status = JSON.stringify(res.data.server_status)
+                    if (res.data.status === "success") {
+                        const server_status = JSON.parse(res.data.server_status)
+                        if (server_status.last_trigger === "start"){
+                            if (server_status.start_state === "running") {
+                                this.btnStartT = "Starting server";
+                                this.btnStartV = "warning";
+                                this.btnStopT = "Stop";
+                                this.btnStopV = "secondary";
+                                this.streaming = "start"
+                                this.streamLogs("start")
+                            } else if (server_status.start_state === "done") {
+                                this.btnStartT = "Server started";
+                                this.btnStartV = "success";
+                                this.btnStopV = "primary";
+                                this.logs = server_status.start_logs
+                            }
+                        } else if (server_status.last_trigger === "stop"){
+                            if (server_status.stop_state === "running") {
+                                this.btnStopT = "Shutting down server";
+                                this.btnStopV = "warning";
+                                this.btnStartT = "Start";
+                                this.btnStartV = "secondary";
+                                this.streaming = "stop"
+                                this.streamLogs("stop")
+                            } else if (server_status.stop_state === "done") {
+                                this.btnStopT = "Server stopped";
+                                this.btnStopV = "danger";
+                                this.btnStartV = "primary";
+                                this.logs = server_status.stop_logs
+                            }
+                        }
+                    }
+                    else { this.$emit('updateParent'); }
                 })
                 .catch((e) => {
                     console.log(e);
-                    this.manage_msg;
+                    this.error_msg = e;
                 })
         },
 
@@ -69,8 +98,13 @@ export default {
             this.logsInterval = setInterval((p=path) => {
                 axios.get(p, {headers: { 'Authorization': `token ${localStorage.getItem('token')}` }})
                     .then((res) => {
-                        this.logs = JSON.parse(res.data.logs);
-                        if (res.data.done) { this.stopStream(); }
+                        if (res.data.status === "success"){
+                            this.logs = JSON.parse(res.data.logs);
+                            if (res.data.done) { this.stopStream(); }
+                        } else {
+                            this.stopStream();
+                            this.$emit('updateParent');
+                        }
                     })
                     .catch((error) => {
                         this.logs = error;
@@ -100,13 +134,12 @@ export default {
                             this.streaming = route;
                             this.streamLogs(route);
                         } else {
-                            console.log("here");
                             this.$emit('updateParent');
                         }
                     })
-                    .catch((error) => {
-                        this.manage_msg = error;
-                        console.log(error);
+                    .catch((e) => {
+                        this.error_msg = e;
+                        console.log(e);
                     });
             }
         }
@@ -115,6 +148,21 @@ export default {
 </script>
 
 <style scoped>
+
+#manageServer {
+    margin: 10px;
+}
+
+button {
+    display: block;
+    margin-bottom: 10px;
+    width: 300px;
+}
+
+#recentActivity {
+    font-weight: bold;
+}
+
 p#log {
    margin: 0px;
    padding: 0px;

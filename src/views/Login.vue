@@ -1,9 +1,11 @@
 <template>
     <div id="login">
         <div class="form-group" id="login-form">
-            <input id="pin" type="password" v-model="pin" class="form-control"/>
-            <button v-on:click="login()" class="btn btn-primary" id="login-btn">Login</button>
-            <p id="error"> {{ feedback }} </p>
+            <form v-on:submit.prevent="login">
+                <input id="pin" type="password" v-model="pin" class="form-control"/>
+                <button class="btn btn-primary" id="login-btn">Login</button>
+                <p id="error"> {{ feedback }} </p>
+            </form>
         </div>
     </div>
 </template>
@@ -23,7 +25,6 @@ export default {
             axios.post(`${process.env.VUE_APP_API_ENDPOINT}/login`, {pin: this.pin, payload: Date.now()})
                 .then((res) => {
                     if (res.data.status === "success"){
-                        console.log(res.data.token)
                         localStorage.setItem('token', res.data.token)
                         this.$emit('updateParent')
                     } else {
