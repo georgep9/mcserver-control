@@ -1,0 +1,24 @@
+#!/bin/bash
+
+SESSION_NAME="minecraft-server"
+
+tmux send-keys -t $SESSION_NAME "/stop" Enter 2>/dev/null
+STATUS_CODE=$?
+if [ $STATUS_CODE -ne 0 ]; then
+    echo "Minecraft server not running."
+    exit 0
+fi
+
+tmux has-session -t $SESSION_NAME 2>/dev/null
+
+while [ $? -eq 0 ];
+do
+    echo "Waiting for the minecraft server to stop..."
+    sleep 5
+    tmux has-session -t $SESSION_NAME 2>/dev/null
+    if [ $? -ne 0 ]; then
+        break
+    fi
+done
+
+echo "Minecraft server shutdown."

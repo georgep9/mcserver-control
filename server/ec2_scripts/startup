@@ -1,0 +1,19 @@
+#!/bin/bash
+
+SESSION_NAME="minecraft-server"
+
+SERVER_DIR="$HOME/minecraft-server"
+SERVER_JAR="server.jar"
+
+INIT_MEM="-Xms1024M"
+MAX_MEM="-Xmx1024m"
+
+tmux has-session -t $SESSION_NAME 2>/dev/null
+if [ $? -eq 0 ];
+then
+    echo "Minecraft server already running."
+    exit 0
+fi
+
+cd $SERVER_DIR
+tmux new-session -d -s $SESSION_NAME "java $MAX_MEM $INIT_MEM -jar $SERVER_JAR nogui"
