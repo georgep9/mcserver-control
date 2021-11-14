@@ -15,7 +15,15 @@ services:
     build:
       context: .
       target: flask-backend
+    environment:
+      EC2_ADDRESS: ${EC2_ADDRESS}
+      EC2_ID: ${EC2_ID}
+      EC2_USER: ${EC2_USER}
+      LOGIN_PIN: ${LOGIN_PIN}
+      SSH_KEY: ${SSH_KEY}
+      SSH_KEY_DIR: ${SSH_KEY_DIR}
     volumes:
       - ~/.aws/:/root/.aws:ro
+      - ~/.ssh/minecraft_server.pem:/root/.ssh/minecraft_server.pem:ro
     ports:
       - "5000:5000"

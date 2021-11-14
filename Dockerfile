@@ -3,7 +3,7 @@ WORKDIR /app/server
 COPY server/environment.yml ./
 RUN conda env create -f environment.yml
 RUN echo "source activate mc-control" > ~/.bashrc
-ENV PATH /opt/conda/envs/wvi/bin:$PATH
+ENV PATH /opt/conda/envs/mc-control/bin:$PATH
 COPY server/ ./
 CMD ["python3", "-u", "app.py"]
 EXPOSE 5000
