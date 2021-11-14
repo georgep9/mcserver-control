@@ -1,4 +1,4 @@
-name: minecraft-server
+name: mc-control
 channels:
   - defaults
 dependencies:

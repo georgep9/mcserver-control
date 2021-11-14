@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      target: nginx-server
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+  backend:
+    container_name: backend
+    build:
+      context: .
+      target: flask-backend
+    volumes:
+      - ~/.aws/:/root/.aws:ro
+    ports:
+      - "5000:5000"
