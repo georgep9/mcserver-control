@@ -34,7 +34,7 @@ export default {
     methods: {
 
         getCurrentStatus : function () {
-            const path = `${process.env.VUE_APP_API_ENDPOINT}/status`;
+            const path = `${process.env.VUE_APP_API_ENDPOINT}/api/status`;
             axios.get(path, {headers: { 'Authorization': `token ${localStorage.getItem('token')}` }})
                 .then((res) => {
                     if (res.data.status === "success") {
@@ -93,7 +93,7 @@ export default {
         },
 
         streamLogs: function(route) {
-            const path = `${process.env.VUE_APP_API_ENDPOINT}/${route}_logs`;
+            const path = `${process.env.VUE_APP_API_ENDPOINT}/api/${route}_logs`;
             this.logsInterval = setInterval((p=path) => {
                 axios.get(p, {headers: { 'Authorization': `token ${localStorage.getItem('token')}` }})
                     .then((res) => {
@@ -114,7 +114,7 @@ export default {
 
         manage: function(route) {
             if (this.logsInterval == null){
-                const path = `${process.env.VUE_APP_API_ENDPOINT}/${route}`;
+                const path = `${process.env.VUE_APP_API_ENDPOINT}/api/${route}`;
                 axios.get(path, {headers: { 'Authorization': `token ${localStorage.getItem('token')}` }})
                     .then((res) => {
                         console.log(res.data);

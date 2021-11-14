@@ -45,7 +45,7 @@ def check_access(auth_header):
             'msg': f"Unauthorized access. Token is {token_status}."
         })
 
-@app.route('/login', methods=["POST"]) 
+@app.route('/api/login', methods=["POST"]) 
 def login():
     submitted_pin = request.json["pin"]
     if (submitted_pin == os.environ.get('LOGIN_PIN')):
@@ -60,7 +60,7 @@ def login():
         'token': token
     })
 
-@app.route('/start', methods=['GET']) 
+@app.route('/api/start', methods=['GET']) 
 def start_server():
     permitted, res = check_access(request.headers.get("Authorization"))
     if not permitted:
@@ -79,7 +79,7 @@ def start_server():
             'msg': msg
         })
 
-@app.route('/start_logs', methods=['GET']) 
+@app.route('/api/start_logs', methods=['GET']) 
 def get_start_logs():
     permitted, res = check_access(request.headers.get("Authorization"))
     if not permitted:
@@ -95,7 +95,7 @@ def get_start_logs():
         'done': done
     })
 
-@app.route('/stop', methods=['GET']) 
+@app.route('/api/stop', methods=['GET']) 
 def stop_server():
     permitted, res = check_access(request.headers.get("Authorization"))
     if not permitted:
@@ -114,7 +114,7 @@ def stop_server():
             'msg': msg
         })
 
-@app.route('/stop_logs', methods=['GET']) 
+@app.route('/api/stop_logs', methods=['GET']) 
 def get_stop_logs():
     permitted, res = check_access(request.headers.get("Authorization"))
     if not permitted:
@@ -130,7 +130,7 @@ def get_stop_logs():
         'done': done
     })
 
-@app.route('/status', methods=['GET'])
+@app.route('/api/status', methods=['GET'])
 def get_status():
     permitted, res = check_access(request.headers.get("Authorization"))
     if not permitted:

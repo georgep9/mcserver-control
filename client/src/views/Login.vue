@@ -22,7 +22,7 @@ export default {
     },
     methods: {
         login() {
-            axios.post(`${process.env.VUE_APP_API_ENDPOINT}/login`, {pin: this.pin, payload: Date.now()})
+            axios.post(`${process.env.VUE_APP_API_ENDPOINT}/api/login`, {pin: this.pin, payload: Date.now()})
                 .then((res) => {
                     if (res.data.status === "success"){
                         localStorage.setItem('token', res.data.token)
