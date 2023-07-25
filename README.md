@@ -1,7 +1,7 @@
 
 # Using Docker Compose with NGINX and Flask
 
-Control panel for managing the startup and shutdown of Minecraft server. 
+Control panel for managing the startup and shutdown of a Minecraft server. 
 
 A Python web application that uses [boto3](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html) to manage an EC2 instance and [paramiko](https://www.paramiko.org/) to run remote shell commands.
 
@@ -41,7 +41,7 @@ services:
       - "5000:5000"
 ```
 
-Here is the startup script the web application runs via SSH. It start a new tmux session running a Java Minecraft server.
+Here is the startup script the web application runs via SSH. It creates a new tmux session to run the Java Minecraft server.
 
 ```bash
 SESSION_NAME="minecraft-server"
